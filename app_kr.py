@@ -201,31 +201,32 @@ def main():
     tab_labels = ["🟢 매수", "🔴 매도", "⚠️ 대기", "전체"]
     tabs = st.tabs(tab_labels)
     
-    # 탭별 데이터 분류
+# 탭별 데이터 분류
     sections = [
-        ([r for r in results if r['tag'] == 'buy'], tabs[0]),
-        ([r for r in results if r['tag'] == 'sell'], tabs[1]),
-        ([r for r in results if 'watch' in r['tag']], tabs[2]),
-        (results, tabs[3])
-    ] # <--- 이 부분의 괄호와 구조를 수정했습니다.
+        ([r for r in results if r['tag'] == 'buy'], tabs[0], "buy"),
+        ([r for r in results if r['tag'] == 'sell'], tabs[1], "sell"),
+        ([r for r in results if 'watch' in r['tag']], tabs[2], "watch"),
+        (results, tabs[3], "all")
+    ]
     
     # 데이터 렌더링 루프
-    for items, tab in sections:
+    for items, tab, tab_id in sections: # tab_id를 추가로 받습니다.
         with tab:
             if not items:
                 st.info("조건에 맞는 종목이 없습니다.")
             else:
-                # 리스트를 돌며 카드와 그래프 출력
-                for r in items:
+                for idx, r in enumerate(items): # idx(번호)를 추가합니다.
                     with st.container():
                         c1, c2 = st.columns([3, 1])
                         with c1:
                             st.markdown(render_card(r), unsafe_allow_html=True)
                         with c2:
+                            # key 값을 "차트_탭이름_종목코드_번호" 식으로 고유하게 지정합니다.
                             st.plotly_chart(
                                 sparkline(r['weekly'], r['tag']), 
                                 use_container_width=True, 
-                                config={'displayModeBar': False}
+                                config={'displayModeBar': False},
+                                key=f"chart_{tab_id}_{r['ticker']}_{idx}" 
                             )
 if __name__ == "__main__":
     main()
