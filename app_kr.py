@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 # ══════════════════════════════════════════════════════════════
 st.set_page_config(
     page_title="국내주식 RSI 신호기",
-    page_icon="📈",
+    page_icon="logo.png",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
