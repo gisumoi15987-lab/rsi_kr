@@ -14,6 +14,10 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+st.markdown("""
+<link rel="apple-touch-icon" href="https://github.com/gisumoi15987-lab/rsi_kr/blob/main/logo.png">
+<link rel="icon" href="https://github.com/gisumoi15987-lab/rsi_kr/blob/main/logo.png">
+""", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
 #  모바일 최적화 CSS (v3.0 디자인 계승)
