@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 #  페이지 설정 (아이콘 및 타이틀)
 # ══════════════════════════════════════════════════════════════
 st.set_page_config(
-    page_title="국내주식 RSI 신호기",
+    page_title="국내주식 트래커",
     page_icon="logo.png",
     layout="wide",
     initial_sidebar_state="collapsed",
