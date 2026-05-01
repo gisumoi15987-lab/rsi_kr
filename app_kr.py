@@ -185,6 +185,10 @@ def main():
     with st.spinner("국내 50개 종목 분석 중..."):
         results = fetch_kr_data()
 
+    if not results:
+        st.error("데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.")
+        return
+
     # 요약 메트릭
     counts = pd.Series([r['tag'] for r in results]).value_counts()
     m1, m2, m3, m4 = st.columns(4)
@@ -194,23 +198,34 @@ def main():
     m4.metric("🟠 과매수", counts.get('watch_high', 0))
 
     # 탭 구성
-    tabs = st.tabs(["🟢 매수", "🔴 매도", "⚠️ 대기", "전체"])
+    tab_labels = ["🟢 매수", "🔴 매도", "⚠️ 대기", "전체"]
+    tabs = st.tabs(tab_labels)
     
+    # 탭별 데이터 분류
     sections = [
         ([r for r in results if r['tag'] == 'buy'], tabs[0]),
         ([r for r in results if r['tag'] == 'sell'], tabs[1]),
         ([r for r in results if 'watch' in r['tag']], tabs[2]),
         (results, tabs[3])
-section_data, tab = sections[0] # 예시
+    ] # <--- 이 부분의 괄호와 구조를 수정했습니다.
     
+    # 데이터 렌더링 루프
     for items, tab in sections:
         with tab:
             if not items:
                 st.info("조건에 맞는 종목이 없습니다.")
-            for r in items:
-                c1, c2 = st.columns([3, 1])
-                with c1: st.markdown(render_card(r), unsafe_allow_html=True)
-                with c2: st.plotly_chart(sparkline(r['weekly'], r['tag']), use_container_width=True, config={'displayModeBar': False})
-
+            else:
+                # 리스트를 돌며 카드와 그래프 출력
+                for r in items:
+                    with st.container():
+                        c1, c2 = st.columns([3, 1])
+                        with c1:
+                            st.markdown(render_card(r), unsafe_allow_html=True)
+                        with c2:
+                            st.plotly_chart(
+                                sparkline(r['weekly'], r['tag']), 
+                                use_container_width=True, 
+                                config={'displayModeBar': False}
+                            )
 if __name__ == "__main__":
     main()
